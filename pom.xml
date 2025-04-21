@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.phumlanidev</groupId>
-	<artifactId>infinity-tech-product-service</artifactId>
+	<artifactId>product-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>infinity-tech-product-service</name>
+	<name>product-service</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
