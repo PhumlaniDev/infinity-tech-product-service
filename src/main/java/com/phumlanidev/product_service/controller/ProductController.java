@@ -16,16 +16,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Comment: this is the placeholder for documentation.
@@ -42,6 +35,7 @@ public class ProductController {
    * Comment: this is the placeholder for documentation.
    */
   @PostMapping("/create")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<ResponseDto> createProduct(@Valid @RequestBody ProductDto productDto) {
     productServiceImpl.createProduct(productDto);
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -52,6 +46,7 @@ public class ProductController {
    * Comment: this is the placeholder for documentation.
    */
   @PatchMapping("/update/{productId}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<ProductDto> updateProduct(@Valid @PathVariable Long productId,
                                                   @RequestBody ProductDto productDto) {
     ProductDto updatedProduct = productServiceImpl.updateProduct(productId, productDto);
@@ -63,6 +58,7 @@ public class ProductController {
    * Comment: this is the placeholder for documentation.
    */
   @GetMapping("/find/{productId}")
+  @PreAuthorize("permitAll()")
   public ResponseEntity<ProductDto> findProductById(@Valid @PathVariable Long productId) {
     ProductDto product = productServiceImpl.findProductById(productId);
     return ResponseEntity.status(HttpStatus.OK).body(product);
@@ -72,6 +68,7 @@ public class ProductController {
    * Comment: this is the placeholder for documentation.
    */
   @DeleteMapping("/delete/{productId}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<ResponseDto> deleteProduct(@PathVariable Long productId) {
     productServiceImpl.deleteProductById(productId);
     return ResponseEntity.status(HttpStatus.OK)
@@ -82,6 +79,7 @@ public class ProductController {
    * Comment: this is the placeholder for documentation.
    */
   @GetMapping
+  @PreAuthorize("permitAll()")
   public ResponseEntity<List<ProductDto>> getAllProducts() {
     List<ProductDto> products = productServiceImpl.findAllProducts();
     return ResponseEntity.status(HttpStatus.OK).body(products);
@@ -92,6 +90,7 @@ public class ProductController {
    */
   //  GET /api/products/search?name=laptop&page=0&size=5&sortField=price&sortDir=desc
   @GetMapping("/search")
+  @PreAuthorize("permitAll()")
   public Page<ProductDto> searchProducts(@RequestParam(required = false) String productName,
                                          @RequestParam(required = false) String category,
                                          @RequestParam(required = false) BigDecimal minPrice,
@@ -106,5 +105,14 @@ public class ProductController {
     Pageable pageable = PageRequest.of(page, size, sort);
     return productServiceImpl.searchProducts(productName, category, minPrice, maxPrice, pageable);
   }
+
+  @GetMapping("/secure-data")
+  public ResponseEntity<String> getData(@RequestHeader("X-User-Roles") String roles) {
+    if (roles.contains("ROLE_ADMIN")) {
+      return ResponseEntity.ok("Access granted to admin data");
+    }
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+  }
+
 
 }
