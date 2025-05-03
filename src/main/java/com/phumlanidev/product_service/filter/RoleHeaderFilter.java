@@ -1,4 +1,4 @@
-package com.phumlanidev.product_service.RoleHeaderFilter;
+package com.phumlanidev.product_service.filter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -36,5 +36,15 @@ public class RoleHeaderFilter extends AbstractGatewayFilterFactory<RoleHeaderFil
 
 
     public static class Config {
+    }
+
+    @Override
+    public Class<Config> getConfigClass() {
+        return Config.class;
+    }
+
+    @Override
+    public String name() {
+        return "RoleHeaderFilter";
     }
 }
