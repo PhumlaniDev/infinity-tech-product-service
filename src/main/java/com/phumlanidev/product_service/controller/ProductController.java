@@ -90,7 +90,6 @@ public class ProductController {
    */
   //  GET /api/products/search?name=laptop&page=0&size=5&sortField=price&sortDir=desc
   @GetMapping("/search")
-  @PreAuthorize("permitAll()")
   public Page<ProductDto> searchProducts(@RequestParam(required = false) String productName,
                                          @RequestParam(required = false) String category,
                                          @RequestParam(required = false) BigDecimal minPrice,
