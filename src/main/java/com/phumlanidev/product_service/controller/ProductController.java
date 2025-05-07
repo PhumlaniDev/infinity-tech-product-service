@@ -78,8 +78,7 @@ public class ProductController {
   /**
    * Comment: this is the placeholder for documentation.
    */
-  @GetMapping
-  @PreAuthorize("permitAll()")
+  @GetMapping("/all")
   public ResponseEntity<List<ProductDto>> getAllProducts() {
     List<ProductDto> products = productServiceImpl.findAllProducts();
     return ResponseEntity.status(HttpStatus.OK).body(products);
