@@ -1,7 +1,6 @@
 package com.phumlanidev.product_service.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
@@ -17,7 +16,6 @@ public class SecurityConfig {
 
     private final KeycloakRoleConverter keycloakRoleConverter;
 
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(
                         authorize -> authorize

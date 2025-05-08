@@ -5,9 +5,10 @@ import com.phumlanidev.product_service.constant.Constant;
 import com.phumlanidev.product_service.dto.ProductDto;
 import com.phumlanidev.product_service.dto.ResponseDto;
 import com.phumlanidev.product_service.service.impl.ProductServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -79,9 +80,11 @@ public class ProductController {
    * Comment: this is the placeholder for documentation.
    */
   @GetMapping("/all")
-  public ResponseEntity<List<ProductDto>> getAllProducts() {
-    List<ProductDto> products = productServiceImpl.findAllProducts();
-    return ResponseEntity.status(HttpStatus.OK).body(products);
+  public ResponseEntity<String> getAllProducts(HttpServletRequest request) {
+//    List<ProductDto> products = productServiceImpl.findAllProducts();
+//    return ResponseEntity.status(HttpStatus.OK).body(products);
+    String auth = request.getHeader("Authorization");
+    return ResponseEntity.ok("Auth header = " + auth);
   }
 
   /**
