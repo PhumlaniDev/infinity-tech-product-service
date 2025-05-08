@@ -2,7 +2,6 @@ package com.phumlanidev.product_service.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,9 +19,9 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers("/api/v1/products/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
+//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasRole("ADMIN")
                                 .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest().authenticated()
                 ).oauth2ResourceServer(
