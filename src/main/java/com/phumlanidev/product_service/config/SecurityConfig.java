@@ -1,32 +1,33 @@
 package com.phumlanidev.product_service.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
-@EnableMethodSecurity
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final KeycloakRoleConverter keycloakRoleConverter;
+  @Value("${spring.security.oauth2.resourceserver.jwt.jwk-uri}")
+  private String jwkUri;
 
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(
-                        authorize -> authorize
-                                .requestMatchers("/api/v1/products/**").permitAll()
-//                                .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN")
-//                                .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
-//                                .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasRole("ADMIN")
-                                .requestMatchers("/actuator/**").permitAll()
-                                .anyRequest().authenticated()
-                ).oauth2ResourceServer(
-                        oauth2 ->
-                                oauth2.jwt(Customizer.withDefaults()));
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/api/v1/products/all", "/api/v1/products/search", "/actuator/**").permitAll()
+                    .requestMatchers("/api/v1/products/**").hasRole("admin")
+                    .anyRequest().authenticated())
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt ->
+                    jwt.jwkSetUri(jwkUri)));
+
     return http.build();
-    }
+  }
 }
