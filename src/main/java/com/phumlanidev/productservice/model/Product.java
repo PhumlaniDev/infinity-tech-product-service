@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 /**
  * Comment: this is the placeholder for documentation.
  */
@@ -30,8 +32,8 @@ public class Product extends BaseEntity {
   private Long productId;
   private String name;
   private String description;
-  private Integer price;
-  private Integer quantity;
+  private BigDecimal price;
+  private BigDecimal quantity;
   private String imageUrl;
 
 }

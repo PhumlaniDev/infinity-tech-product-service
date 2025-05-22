@@ -18,16 +18,18 @@ public class SecurityConfig {
   @Value("${spring.security.oauth2.resourceserver.jwt.jwk-uri}")
   private String jwkUri;
 
+  private final JwtAuthenticationConverter jwtAuthenticationConverter;
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/actuator/**").permitAll()
-                    .requestMatchers("/api/v1/products/all", "/api/v1/products/search").permitAll()
-                    .requestMatchers("/api/v1/products/**").hasRole("admin")
+                    .requestMatchers("/api/v1/products/all","/api/v1/products/*/price", "/api/v1/products/search").permitAll()
+                    .requestMatchers("/api/v1/products/**").hasRole("user")
                     .anyRequest().authenticated())
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt ->
-                    jwt.jwkSetUri(jwkUri)));
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(
+                    jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
     return http.build();
   }

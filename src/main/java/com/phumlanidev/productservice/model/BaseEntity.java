@@ -48,6 +48,6 @@ public class BaseEntity {
    */
   @PrePersist
   public void prePersist() {
-    log.info("Setting createdAt: {}", createdAt);
+    log.info("PrePersist - createdAt: {}, createdBy: {}", createdAt, createdBy);
   }
 }

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 /**
  * Comment: this is the placeholder for documentation.
  */
@@ -23,9 +25,9 @@ public class ProductDto {
   @NotEmpty(message = "Description must not be blank")
   private String description;
   @NotEmpty(message = "Price is required")
-  private Integer price;
+  private BigDecimal price;
   @NotNull(message = "Quantity must not be null")
-  private Integer quantity;
+  private BigDecimal quantity;
   private String imageUrl;
 
 }

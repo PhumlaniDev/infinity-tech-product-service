@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class KeycloakRoleConverter implements Converter<Jwt, AbstractAuthenticationToken> {
+public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
   @Value("${keycloak.principle-attribute}")
   private String principleAttribute;

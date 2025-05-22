@@ -9,25 +9,33 @@ import com.phumlanidev.productservice.mapper.ProductMapper;
 import com.phumlanidev.productservice.model.Product;
 import com.phumlanidev.productservice.repository.ProductRepository;
 import com.phumlanidev.productservice.utils.ProductSpecification;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 /**
  * Comment: this is the placeholder for documentation.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ProductServiceImpl {
 
   private final ProductRepository productRepository;
   private final ProductMapper productMapper;
+  private final HttpServletRequest request;
+  private final AuditLogServiceImpl auditLogService;
 
 
   /**
@@ -35,6 +43,9 @@ public class ProductServiceImpl {
    */
   @Transactional
   public void createProduct(ProductDto productDto) {
+    String clientIp = request.getRemoteAddr();
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth != null ? auth.getName() : "anonymous";
 
     if (productDto.getName() == null || productDto.getName().isEmpty()) {
       throw new IllegalArgumentException("Product name cannot be null or empty");
@@ -48,7 +59,18 @@ public class ProductServiceImpl {
 
     Product savedProduct = productRepository.save(product);
 
+    String userId = null;
+    if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
+      userId = jwt.getSubject(); // Keycloak userId (UUID)
+    }
+
     productMapper.toDto(savedProduct, productDto);
+    auditLogService.log(
+            "PRODUCT_CREATED",
+            userId,
+            username,
+            clientIp,
+            "Product created successfully");
   }
 
   /**
@@ -65,27 +87,19 @@ public class ProductServiceImpl {
   /**
    * Comment: this is the placeholder for documentation.
    */
-  @Cacheable(value = "products")
   @Transactional
   public List<ProductDto> findAllProducts() {
-
     List<Product> products = productRepository.findAll();
+    log.debug("Products from DB: {}", products);
 
-    return products.stream()
-        .filter(product -> product.getName() != null && !product.getName().isEmpty())
-        .map(product -> productMapper.toDto(product, new ProductDto())).toList();
+    List<ProductDto> productDtos = products.stream()
+            .filter(product -> product.getName() != null && !product.getName().isEmpty())
+            .map(product -> productMapper.toDto(product, new ProductDto())).toList();
+    log.debug("Filtered Products: {}", productDtos);
+
+    return productDtos;
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
-  @Transactional
-  @Cacheable(value = "productId")
-  public ProductDto getProductById(Long productId) {
-    Product product = productRepository.findById(productId)
-        .orElseThrow(() -> new ProductNotFoundException(Constant.PRODUCT_NOT_FOUND));
-    return productMapper.toDto(product, new ProductDto());
-  }
 
   /**
    * Comment: this is the placeholder for documentation.
@@ -103,6 +117,22 @@ public class ProductServiceImpl {
 
     Product updateProduct = productRepository.save(product);
 
+    String clientIp = request.getRemoteAddr();
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth != null ? auth.getName() : "anonymous";
+
+    String userId = null;
+    if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
+      userId = jwt.getSubject(); // Keycloak userId (UUID)
+    }
+
+    auditLogService.log(
+            "PRODUCT_UPDATED",
+            userId,
+            username,
+            clientIp,
+            "Product updated successfully");
+
     return productMapper.toDto(updateProduct, new ProductDto());
   }
 
@@ -115,6 +145,22 @@ public class ProductServiceImpl {
     productRepository.findById(productId)
         .orElseThrow(() -> new ProductNotFoundException(Constant.PRODUCT_NOT_FOUND));
     productRepository.deleteById(productId);
+
+    String clientIp = request.getRemoteAddr();
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth != null ? auth.getName() : "anonymous";
+
+    String userId = null;
+    if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
+      userId = jwt.getSubject(); // Keycloak userId (UUID)
+    }
+
+    auditLogService.log(
+            "PRODUCT_DELETED",
+            userId,
+            username,
+            clientIp,
+            "Product updated successfully");
   }
 
   /**
@@ -131,5 +177,11 @@ public class ProductServiceImpl {
     Page<Product> productPage = productRepository.findAll(spec, pageable);
 
     return productPage.map(product -> productMapper.toDto(product, new ProductDto()));
+  }
+
+  public BigDecimal getProductPrice(Long productId) {
+    Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new ProductNotFoundException(Constant.PRODUCT_NOT_FOUND));
+    return product.getPrice();
   }
 }

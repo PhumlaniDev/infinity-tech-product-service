@@ -5,7 +5,6 @@ import com.phumlanidev.productservice.constant.Constant;
 import com.phumlanidev.productservice.dto.ProductDto;
 import com.phumlanidev.productservice.dto.ResponseDto;
 import com.phumlanidev.productservice.service.impl.ProductServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +34,6 @@ public class ProductController {
    * Comment: this is the placeholder for documentation.
    */
   @PostMapping("/create")
-  @PreAuthorize("hasRole('admin')")
   public ResponseEntity<ResponseDto> createProduct(@Valid @RequestBody ProductDto productDto) {
     productServiceImpl.createProduct(productDto);
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -77,7 +74,7 @@ public class ProductController {
    * Comment: this is the placeholder for documentation.
    */
   @GetMapping("/all")
-  public ResponseEntity<List<ProductDto>> getAllProducts(HttpServletRequest request) {
+  public ResponseEntity<List<ProductDto>> getAllProducts() {
     List<ProductDto> products = productServiceImpl.findAllProducts();
     return ResponseEntity.status(HttpStatus.OK).body(products);
   }
@@ -100,6 +97,14 @@ public class ProductController {
         Sort.by(sortField).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
     return productServiceImpl.searchProducts(productName, category, minPrice, maxPrice, pageable);
+  }
+
+  /**
+   * Comment: this is the placeholder for documentation.
+   */
+  @GetMapping("/{productId}/price")
+  public BigDecimal getProductPrice(@PathVariable Long productId) {
+    return productServiceImpl.getProductPrice(productId);
   }
 
   @GetMapping("/secure-data")
