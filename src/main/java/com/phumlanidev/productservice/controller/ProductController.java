@@ -6,9 +6,6 @@ import com.phumlanidev.productservice.dto.ProductDto;
 import com.phumlanidev.productservice.dto.ResponseDto;
 import com.phumlanidev.productservice.service.impl.ProductServiceImpl;
 import jakarta.validation.Valid;
-import java.math.BigDecimal;
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Comment: this is the placeholder for documentation.

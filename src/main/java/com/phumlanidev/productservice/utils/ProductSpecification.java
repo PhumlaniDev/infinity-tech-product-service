@@ -3,10 +3,11 @@ package com.phumlanidev.productservice.utils;
 
 import com.phumlanidev.productservice.model.Product;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.data.jpa.domain.Specification;
 
 /**
  * Comment: this is the placeholder for documentation.
