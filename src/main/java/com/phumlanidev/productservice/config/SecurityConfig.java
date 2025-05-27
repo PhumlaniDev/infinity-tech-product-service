@@ -9,7 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
-
+/**
+ * Comment: this is the placeholder for documentation.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -20,13 +22,17 @@ public class SecurityConfig {
 
   private final JwtAuthenticationConverter jwtAuthenticationConverter;
 
+  /**
+   * Comment: this is the placeholder for documentation.
+   */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/actuator/**").permitAll()
-                    .requestMatchers("/api/v1/products/all","/api/v1/products/*/price", "/api/v1/products/search").permitAll()
-                    .requestMatchers("/api/v1/products/**").hasRole("user")
+                    .requestMatchers("/api/v1/products/all", "/api/v1/products/*/price",
+                            "/api/v1/products/search").permitAll()
+                    .requestMatchers("/api/v1/products/**").hasRole("admin")
                     .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(
                     jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
