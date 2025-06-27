@@ -1,7 +1,7 @@
 package com.phumlanidev.productservice.dto;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -20,9 +20,9 @@ public class ProductDto {
   private String name;
   @NotEmpty(message = "Description must not be blank")
   private String description;
-  @NotEmpty(message = "Price is required")
+  @DecimalMin(value = "0.01", message = "Price must be greater than 0")
   private BigDecimal price;
-  @NotNull(message = "Quantity must not be null")
+  @DecimalMin(value = "1", message = "Quantity must be at least 1")
   private BigDecimal quantity;
   private String imageUrl;
 

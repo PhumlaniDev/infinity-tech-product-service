@@ -7,7 +7,6 @@ import com.phumlanidev.productservice.dto.ResponseDto;
 import com.phumlanidev.productservice.service.impl.ProductServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -63,8 +62,7 @@ public class ProductController {
 
   //  GET /api/products/search?name=laptop&page=0&size=5&sortField=price&sortDir=desc
   @GetMapping("/search")
-  public Page<ProductDto> searchProducts(@RequestParam(required = false) String productName,
-                                         @RequestParam(required = false) String category,
+  public List<ProductDto> searchProducts(@RequestParam(required = false) String productName,
                                          @RequestParam(required = false) BigDecimal minPrice,
                                          @RequestParam(required = false) BigDecimal maxPrice,
                                          @RequestParam(defaultValue = "0") int page,
@@ -75,7 +73,7 @@ public class ProductController {
     Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortField).descending() :
         Sort.by(sortField).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    return productServiceImpl.searchProducts(productName, category, minPrice, maxPrice, pageable);
+    return productServiceImpl.searchProducts(productName, minPrice, maxPrice, pageable);
   }
 
   @GetMapping("/{productId}/price")

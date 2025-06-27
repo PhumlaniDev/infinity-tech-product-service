@@ -19,9 +19,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -128,18 +125,21 @@ public class ProductServiceImpl {
   /**
    * Comment: this is the placeholder for documentation.
    */
-  @Cacheable(value = "productSearchCache", key = "#productName + '-' + #category + '-' + #minPrice + " +
+  @Cacheable(value = "productSearchCache", key = "#productName + '-' + #minPrice + " +
       "'-' + #maxPrice + '-' + #pageable.pageNumber + '-' " +
       "+ #pageable.pageSize + '-' + #pageable.sort")
-  public Page<ProductDto> searchProducts(String productName, String category, BigDecimal minPrice,
+  public List<ProductDto> searchProducts(String productName, BigDecimal minPrice,
                                          BigDecimal maxPrice, Pageable pageable) {
     Specification<Product> spec =
-        ProductSpecification.filterProducts(productName, category, minPrice, maxPrice);
+        ProductSpecification.filterProducts(productName, minPrice, maxPrice);
 
     Page<Product> productPage = productRepository.findAll(spec, pageable);
     log.debug("Product search results: {}", productPage.getContent());
 
-    return productPage.map(product -> productMapper.toDto(product, new ProductDto()));
+    return productPage.getContent()
+            .stream()
+            .map(product -> productMapper.toDto(product, new ProductDto()))
+            .toList();
   }
 
   public BigDecimal getProductPrice(Long productId) {
@@ -152,10 +152,8 @@ public class ProductServiceImpl {
 
   private void logAudit(String action, String details) {
     String clientIp = request.getRemoteAddr();
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    String username = auth != null ? auth.getName() : "anonymous";
-    Jwt jwt = jwtAuthenticationConverter.getJwt();
-    String userId = jwtAuthenticationConverter.extractUserId(jwt);
+    String username = jwtAuthenticationConverter.getCurrentUsername();
+    String userId = jwtAuthenticationConverter.getCurrentUserId();
 
 
     auditLogService.log(

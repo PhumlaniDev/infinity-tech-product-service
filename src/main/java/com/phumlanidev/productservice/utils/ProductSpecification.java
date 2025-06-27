@@ -20,7 +20,7 @@ public class ProductSpecification {
   /**
    * Comment: this is the placeholder for documentation.
    */
-  public static Specification<Product> filterProducts(String name, String category,
+  public static Specification<Product> filterProducts(String name,
                                                       BigDecimal minPrice, BigDecimal maxPrice) {
 
     return (root, query, criteriaBuilder) -> {
@@ -31,10 +31,10 @@ public class ProductSpecification {
             "%" + name.toLowerCase() + "%"));
       }
 
-      if (category != null && !category.isEmpty()) {
-        predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("category")),
-            category.toLowerCase()));
-      }
+//      if (category != null && !category.isEmpty()) {
+//        predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("category")),
+//            category.toLowerCase()));
+//      }
 
       if (minPrice != null) {
         predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
