@@ -27,7 +27,9 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
+    http.csrf(csrf -> csrf
+            .ignoringRequestMatchers("/actuator/**", "/api/v1/products/all", 
+                    "/api/v1/products/*/price", "/api/v1/products/search"))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers("/api/v1/products/all", "/api/v1/products/*/price",
