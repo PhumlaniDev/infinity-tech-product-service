@@ -155,7 +155,6 @@ public class ProductServiceImpl {
     String username = jwtAuthenticationConverter.getCurrentUsername();
     String userId = jwtAuthenticationConverter.getCurrentUserId();
 
-
     auditLogService.log(
             action,
             userId,
