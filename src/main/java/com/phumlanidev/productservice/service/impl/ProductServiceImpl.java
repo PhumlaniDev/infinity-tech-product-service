@@ -1,6 +1,6 @@
 package com.phumlanidev.productservice.service.impl;
 
-
+import com.phumlanidev.commonevents.events.ProductCreatedEvent;
 import com.phumlanidev.productservice.config.JwtAuthenticationConverter;
 import com.phumlanidev.productservice.constant.Constant;
 import com.phumlanidev.productservice.dto.ProductDto;
@@ -8,6 +8,7 @@ import com.phumlanidev.productservice.exception.ProductNotFoundException;
 import com.phumlanidev.productservice.exception.product.ProductAlreadyExistsException;
 import com.phumlanidev.productservice.mapper.ProductMapper;
 import com.phumlanidev.productservice.model.Product;
+import com.phumlanidev.productservice.publisher.ProductEventPublisher;
 import com.phumlanidev.productservice.repository.ProductRepository;
 import com.phumlanidev.productservice.utils.ProductSpecification;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ public class ProductServiceImpl {
   private final HttpServletRequest request;
   private final AuditLogServiceImpl auditLogService;
   private final JwtAuthenticationConverter jwtAuthenticationConverter;
+  private final ProductEventPublisher productEventPublisher;
 
   @Transactional
   public void createProduct(ProductDto productDto) {
@@ -54,6 +56,13 @@ public class ProductServiceImpl {
 
     productMapper.toDto(savedProduct, productDto);
     logAudit("PRODUCT_CREATED","PRODUCT_CREATED");
+    productEventPublisher.publishProductCreated(
+            ProductCreatedEvent.builder()
+                    .productId(product.getProductId())
+                    .name(product.getName())
+                    .initialQuantity(product.getQuantity())
+                    .build()
+    );
   }
 
   /**
