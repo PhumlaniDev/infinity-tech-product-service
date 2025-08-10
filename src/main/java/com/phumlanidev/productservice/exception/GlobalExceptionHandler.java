@@ -20,9 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -43,9 +40,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponseDto> handleGlobalException(Exception ex, WebRequest request) {
 
@@ -56,9 +50,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @ExceptionHandler(UserNotFoundException.class)
   public ResponseEntity<ErrorResponseDto> handleUserNotFoundException(UserNotFoundException ex,
                                                                       WebRequest request) {
@@ -69,9 +60,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @ExceptionHandler(UserAlreadyExistException.class)
   public ResponseEntity<ErrorResponseDto> handleUserAlreadyExistException(
       UserAlreadyExistException ex, WebRequest request) {
@@ -82,9 +70,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @ExceptionHandler(CategoryAlreadyExistsException.class)
   public ResponseEntity<ErrorResponseDto> handleCategoryAlreadyExistException(
       CategoryAlreadyExistsException ex, WebRequest request) {
@@ -95,9 +80,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @ExceptionHandler(BaseException.class)
   public ResponseEntity<ErrorResponseDto> handleBaseException(BaseException ex,
                                                               WebRequest request) {

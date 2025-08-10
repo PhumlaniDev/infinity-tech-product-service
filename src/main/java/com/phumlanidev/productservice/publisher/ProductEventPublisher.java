@@ -15,9 +15,6 @@ public class ProductEventPublisher {
 
   public void publishProductCreated(ProductCreatedEvent event) {
     log.info("📤 Sending product created event: {}", event);
-//    boolean sent = streamBridge.send("productCreated-out-0", event);
     kafkaTemplate.send(TOPIC, event);
-
-//    log.info("📤 Event sent successfully: {}", sent);
   }
 }

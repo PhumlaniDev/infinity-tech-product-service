@@ -9,17 +9,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 public class ProductSpecification {
 
   private ProductSpecification() {
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   public static Specification<Product> filterProducts(String name,
                                                       BigDecimal minPrice, BigDecimal maxPrice) {
 

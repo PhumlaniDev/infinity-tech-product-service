@@ -8,9 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 @Component("auditorAwareImpl")
 @Slf4j
 public class AuditorAwareImpl implements AuditorAware<String> {

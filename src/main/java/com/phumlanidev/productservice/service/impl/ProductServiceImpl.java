@@ -25,9 +25,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -65,9 +62,6 @@ public class ProductServiceImpl {
     );
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Transactional
   @Cacheable(value = "products", key = "#productId")
   public ProductDto findProductById(Long productId) {
@@ -79,9 +73,6 @@ public class ProductServiceImpl {
     return productDto;
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Transactional
   public List<ProductDto> findAllProducts() {
     List<Product> products = productRepository.findAll();
@@ -96,10 +87,6 @@ public class ProductServiceImpl {
     return productDtos;
   }
 
-
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Transactional
   @CacheEvict(value = "products", key = "#productId")
   public ProductDto updateProduct(Long productId, ProductDto productDto) {
@@ -118,9 +105,6 @@ public class ProductServiceImpl {
     return productMapper.toDto(updateProduct, new ProductDto());
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Transactional
   @CacheEvict(value = "products", key = "#productId")
   public void deleteProductById(Long productId) {
@@ -131,9 +115,6 @@ public class ProductServiceImpl {
     logAudit("PRODUCT_DELETED", "Product deleted successfully");
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Cacheable(value = "productSearchCache", key = "#productName + '-' + #minPrice + " +
       "'-' + #maxPrice + '-' + #pageable.pageNumber + '-' " +
       "+ #pageable.pageSize + '-' + #pageable.sort")

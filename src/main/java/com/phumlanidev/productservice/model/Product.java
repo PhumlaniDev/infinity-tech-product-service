@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table
