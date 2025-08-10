@@ -137,7 +137,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.phumlanidev</groupId>
+			<groupId>com.phumlanidev.commonevents</groupId>
 			<artifactId>common-events</artifactId>
 			<version>1.0.0</version>
 		</dependency>
