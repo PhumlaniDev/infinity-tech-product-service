@@ -27,7 +27,10 @@ public class SecurityConfig {
                     .requestMatchers(
                             "/actuator/**",
                             "/api/v1/products/all", "/api/v1/products/*/price",
-                            "/api/v1/products/search").permitAll()
+                            "/api/v1/products/search",
+                            "/v3/api-docs/**",
+                            "/swagger-ui/**"
+                            ).permitAll()
                     .requestMatchers("/api/v1/products/**").hasRole("admin")
                     .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(
