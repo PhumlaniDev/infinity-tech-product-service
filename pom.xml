@@ -248,6 +248,7 @@
 
 	<build>
 		<plugins>
+
 			<!-- Standard JAR for deployment -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

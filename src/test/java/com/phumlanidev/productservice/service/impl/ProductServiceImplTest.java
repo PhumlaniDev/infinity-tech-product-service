@@ -31,6 +31,8 @@ class ProductServiceImplTest {
   @Mock private ProductRepository productRepository;
   @Mock private ProductMapper productMapper;
   @Mock private ProductEventPublisher productEventPublisher;
+  @Mock private JwtAuthenticationConverter jwtAuthenticationConverter;
+  @Mock private AuditLogServiceImpl auditLogService;
   @Mock private HttpServletRequest request;
 
   @InjectMocks private ProductServiceImpl productServiceImpl;
@@ -60,6 +62,11 @@ class ProductServiceImplTest {
     when(productRepository.findByName("Test product")).thenReturn(Optional.empty());
     when(productMapper.toEntity(any(ProductDto.class), any(Product.class))).thenReturn(product);
     when(productRepository.save(any(Product.class))).thenReturn(product);
+    when(jwtAuthenticationConverter.getCurrentUsername())
+            .thenReturn("test-user");
+
+    doNothing().when(auditLogService)
+            .log(anyString(), anyString(), anyString(), anyString(), anyString());
 
     // Act
     productServiceImpl.createProduct(productDto);
@@ -92,6 +99,12 @@ class ProductServiceImplTest {
 
     when(productRepository.findById(productId)).thenReturn(Optional.of(product));
     when(productMapper.toDto(any(Product.class), any(ProductDto.class))).thenReturn(productDto);
+
+    when(jwtAuthenticationConverter.getCurrentUsername())
+            .thenReturn("test-user");
+
+    doNothing().when(auditLogService)
+            .log(anyString(), anyString(), anyString(), anyString(), anyString());
 
     // Act
     ProductDto result = productServiceImpl.findProductById(productId);
@@ -138,6 +151,12 @@ class ProductServiceImplTest {
     when(productRepository.findAll()).thenReturn(List.of(validProductName, invalidProductName));
     when(productMapper.toDto(eq(validProductName), any(ProductDto.class)))
             .thenReturn(new ProductDto());
+
+    when(jwtAuthenticationConverter.getCurrentUsername())
+            .thenReturn("test-user");
+
+    doNothing().when(auditLogService)
+            .log(anyString(), anyString(), anyString(), anyString(), anyString());
 
     // Act
     List<ProductDto> result = productServiceImpl.findAllProducts();
@@ -196,6 +215,12 @@ class ProductServiceImplTest {
     when(productRepository.save(existingProduct)).thenReturn(updatedProduct);
     when(productMapper.toDto(eq(updatedProduct), any(ProductDto.class))).thenReturn(updatedProductDto);
 
+    when(jwtAuthenticationConverter.getCurrentUsername())
+            .thenReturn("test-user");
+
+    doNothing().when(auditLogService)
+            .log(anyString(), anyString(), anyString(), anyString(), anyString());
+
     // Act
     ProductDto result = productServiceImpl.updateProduct(productId, productDto);
 
@@ -228,6 +253,11 @@ class ProductServiceImplTest {
     existingProduct.setProductId(productId);
 
     when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
+    when(jwtAuthenticationConverter.getCurrentUsername())
+            .thenReturn("test-user");
+
+    doNothing().when(auditLogService)
+            .log(anyString(), anyString(), anyString(), anyString(), anyString());
 
     productServiceImpl.deleteProductById(productId);
 
@@ -259,6 +289,11 @@ class ProductServiceImplTest {
 
     when(productRepository.findById(1L))
             .thenReturn(Optional.of(product));
+    when(jwtAuthenticationConverter.getCurrentUsername())
+            .thenReturn("test-user");
+
+    doNothing().when(auditLogService)
+            .log(anyString(), anyString(), anyString(), anyString(), anyString());
 
     BigDecimal price = productServiceImpl.getProductPrice(1L);
 
