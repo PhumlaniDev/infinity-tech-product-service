@@ -1,6 +1,7 @@
 package com.phumlanidev.productservice.service.impl;
 
-import com.phumlanidev.commonevents.events.ProductCreatedEvent;
+
+import com.phumlanidev.commonevents.events.product.ProductCreatedEvent;
 import com.phumlanidev.productservice.config.JwtAuthenticationConverter;
 import com.phumlanidev.productservice.constant.Constant;
 import com.phumlanidev.productservice.dto.ProductDto;
