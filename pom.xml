@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-cloud.version>2025.0.0</spring-cloud.version>
+		<sonar.organization>phumlanidev</sonar.organization>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -314,7 +315,7 @@
 				</configuration>
 			</plugin>
 
-			<!--  Jacoco  -->
+			<!--  JaCoCo  -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
