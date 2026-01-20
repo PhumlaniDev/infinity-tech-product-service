@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: docker,dev
+    active: docker,dev,test
   application:
     name: product-service
   config:
