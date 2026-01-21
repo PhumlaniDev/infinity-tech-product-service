@@ -39,6 +39,7 @@ jobs:
     permissions:
       actions: read
       contents: read
+      packages: read
       security-events: write
     uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sast.yml@main
     secrets: inherit
