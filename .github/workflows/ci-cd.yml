@@ -46,7 +46,7 @@ jobs:
 #      scan_tool: ${{ matrix.scan_tool }}
 
   docker:
-    name: build
+    needs: build
     permissions:
       packages: write      # Required for pushing to ghcr.io
       actions: read
