@@ -63,6 +63,7 @@ jobs:
       actions: read
       contents: read
       security-events: write
+      packages: read
     uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sca.yml@main
     with:
       image_tag: ${{ needs.docker.outputs.image_tag }}
