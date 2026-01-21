@@ -35,25 +35,16 @@ jobs:
     needs: build
     strategy:
       matrix:
-        job: [ sonar, spotbugs, semgrep ]
+        job: [ codeql, sonar, spotbugs, semgrep ]
     permissions:
       actions: read
       contents: read
       security-events: write
     uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sast.yml@main
     secrets: inherit
-
-  sast-codeql:
-    strategy:
-        matrix:
-            job: [ codeql ]
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sast.yml@main
-    secrets: inherit
-
+    with:
+      scan_tool: ${{ matrix.job }}
+      project_name: product-service
 
   docker:
     permissions:
@@ -65,26 +56,8 @@ jobs:
       project_name: product-service
     secrets: inherit
 
-  sca-trivy:
+  sca:
     needs: docker
-    strategy:
-      matrix:
-        job: [ trivy ]
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sca.yml@main
-    with:
-      image_tag: ${{ needs.docker.outputs.image_tag }}
-      project_name: product-service
-    secrets: inherit
-
-  sca-snyk:
-    needs: build
-    strategy:
-      matrix:
-        job: [ snyk ]
     permissions:
       actions: read
       contents: read
@@ -111,10 +84,8 @@ jobs:
       - build
       - checkstyle
       - sast
-      - sast-codeql
       - docker
-      - sca-trivy
-      - sca-snyk
+      - sca
     if: always()
     with:
       status: >-
@@ -123,10 +94,8 @@ jobs:
       description: |
         Build: `${{ needs.build.result }}`
         Checkstyle: `${{ needs.checkstyle.result }}`
-        SAST-CODEQL: `${{ needs.sast-codeql.result }}`
         SAST: `${{ needs.sast.result }}`
-        SCA-TRIVY: `${{ needs.sca-trivy.result }}`
-        SCA-SNYK: `${{ needs.sca-snyk.result }}`
+        SCA: `${{ needs.sca.result }}`
         Commit: `${{ github.sha }}`
         [View Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
       color: >-
