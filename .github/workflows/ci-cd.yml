@@ -44,9 +44,9 @@ jobs:
     secrets: inherit
     with:
       scan_tool: ${{ matrix.job }}
-      project_name: product-service
 
   docker:
+    name: build
     permissions:
       packages: write      # Required for pushing to ghcr.io
       actions: read
