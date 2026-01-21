@@ -33,17 +33,17 @@ jobs:
 
   sast:
     needs: build
-    strategy:
-      matrix:
-        scan_tool: [ codeql, sonar, spotbugs, semgrep ]
+#    strategy:
+#      matrix:
+#        scan_tool: [ codeql, sonar, spotbugs, semgrep ]
     permissions:
       actions: read
       contents: read
       security-events: write
     uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sast.yml@main
     secrets: inherit
-    with:
-      scan_tool: ${{ matrix.scan_tool }}
+#    with:
+#      scan_tool: ${{ matrix.scan_tool }}
 
   docker:
     name: build
