@@ -14,9 +14,15 @@ on:
     branches: [ develop, main ]
 
 jobs:
+  build:
+    permissions:
+      actions: read
+      contents: read
+    uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-build-test.yml@main
+    secrets: inherit
 
   checkstyle:
-    name: Checkstyle
+    name: build
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -25,16 +31,22 @@ jobs:
       - name: Run Checkstyle
         run: mvn --batch-mode checkstyle:check
 
-  build:
-    needs: checkstyle
+  sast-codeql:
+    strategy:
+        matrix:
+            job: [ codeql ]
     permissions:
       actions: read
       contents: read
-    uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-build-test.yml@main
+      security-events: write
+    uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sast.yml@main
     secrets: inherit
 
   sast:
     needs: build
+    strategy:
+      matrix:
+        job: [ sonar, spotbugs, semgrep ]
     permissions:
       actions: read
       contents: read
@@ -43,7 +55,6 @@ jobs:
     secrets: inherit
 
   docker:
-    needs: build
     permissions:
       packages: write      # Required for pushing to ghcr.io
       contents: read
@@ -52,8 +63,26 @@ jobs:
       project_name: product-service
     secrets: inherit
 
-  sca:
+  sca-trivy:
     needs: docker
+    strategy:
+      matrix:
+        job: [ trivy ]
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sca.yml@main
+    with:
+      image_tag: ${{ needs.docker.outputs.image_tag }}
+      project_name: product-service
+    secrets: inherit
+
+  sca-snyk:
+    needs: build
+    strategy:
+      matrix:
+        job: [ snyk ]
     permissions:
       actions: read
       contents: read
