@@ -22,7 +22,7 @@ jobs:
     secrets: inherit
 
   checkstyle:
-    name: build
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
