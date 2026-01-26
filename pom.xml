@@ -365,6 +365,28 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+
+			<!--spotbugs-->
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>4.9.8.2</version>  <!-- or latest stable version, check https://mvnrepository.com/artifact/com.github.spotbugs/spotbugs-maven-plugin -->
+				<configuration>
+					<effort>Max</effort>              <!-- same as your action -->
+					<threshold>High</threshold>        <!-- corresponds to confidence: high -->
+					<plugins>
+						<plugin>
+							<groupId>com.h3xstream.findsecbugs</groupId>
+							<artifactId>findsecbugs-plugin</artifactId>
+							<version>1.13.0</version>      <!-- or latest; check compatibility -->
+						</plugin>
+					</plugins>
+					<!-- Optional: add your filter early -->
+					<!-- <excludeFilterFile>spotbugs-filter.xml</excludeFilterFile> -->
+					<!-- For SARIF output (GitHub compatible): -->
+					<sarifOutputFile>${project.build.directory}/spotbugs.sarif</sarifOutputFile>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -415,5 +437,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>
