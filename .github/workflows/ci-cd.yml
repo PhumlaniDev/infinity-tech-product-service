@@ -27,30 +27,22 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-
       - name: Run Checkstyle
         run: mvn --batch-mode checkstyle:check
 
   sast:
     needs: build
-#    strategy:
-#      matrix:
-#        scan_tool: [ codeql, sonar, spotbugs, semgrep ]
     permissions:
       actions: read
       contents: read
-      packages: read
       security-events: write
     uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sast.yml@main
     secrets: inherit
-#    with:
-#      scan_tool: ${{ matrix.scan_tool }}
 
   docker:
     needs: build
     permissions:
       packages: write      # Required for pushing to ghcr.io
-      actions: read
       contents: read
     uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-docker.yml@main
     with:
@@ -63,7 +55,6 @@ jobs:
       actions: read
       contents: read
       security-events: write
-      packages: read
     uses: PhumlaniDev/reusable-workflows/.github/workflows/java-maven-sca.yml@main
     with:
       image_tag: ${{ needs.docker.outputs.image_tag }}
