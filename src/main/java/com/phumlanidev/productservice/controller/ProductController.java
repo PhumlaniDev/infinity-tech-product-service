@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-
-@Tag(name = "Products", description = "Endpoints for managing products")
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -33,15 +31,6 @@ public class ProductController {
 
   private final ProductServiceImpl productServiceImpl;
 
-  @Operation(
-          summary = "Create a new product",
-          description = "Creates a product with provided details",
-          responses = {
-                  @ApiResponse(responseCode = "201", description = "Product created"),
-                  @ApiResponse(responseCode = "400", description = "Invalid input",
-                          content = @Content(schema = @Schema(hidden = true)))
-          }
-  )
   @PostMapping("/create")
   public ResponseEntity<ResponseDto> createProduct(@Valid @RequestBody ProductDto productDto) {
     productServiceImpl.createProduct(productDto);
@@ -49,7 +38,6 @@ public class ProductController {
         .body(new ResponseDto(Constant.STATUS_CODE_CREATED, "Product created successfully"));
   }
 
-  @Operation(summary = "Update product by ID")
   @PatchMapping("/update/{productId}")
   public ResponseEntity<ProductDto> updateProduct(@Valid @PathVariable Long productId,
                                                   @RequestBody ProductDto productDto) {
@@ -58,14 +46,12 @@ public class ProductController {
 
   }
 
-  @Operation(summary = "Get product by ID")
   @GetMapping("/find/{productId}")
   public ResponseEntity<ProductDto> findProductById(@Valid @PathVariable Long productId) {
     ProductDto product = productServiceImpl.findProductById(productId);
     return ResponseEntity.status(HttpStatus.OK).body(product);
   }
 
-  @Operation(summary = "Delete product by ID")
   @DeleteMapping("/delete/{productId}")
   public ResponseEntity<ResponseDto> deleteProduct(@PathVariable Long productId) {
     productServiceImpl.deleteProductById(productId);
@@ -73,7 +59,6 @@ public class ProductController {
         .body(new ResponseDto(Constant.STATUS_CODE_OK, Constant.MESSAGE_200));
   }
 
-  @Operation(summary = "Get all products")
   @GetMapping("/all")
   public ResponseEntity<List<ProductDto>> getAllProducts() {
     List<ProductDto> products = productServiceImpl.findAllProducts();
@@ -81,7 +66,6 @@ public class ProductController {
   }
 
   //  GET /api/products/search?name=laptop&page=0&size=5&sortField=price&sortDir=desc
-  @Operation(summary = "Search products with filters")
   @GetMapping("/search")
   public List<ProductDto> searchProducts(@RequestParam(required = false) String productName,
                                          @RequestParam(required = false) BigDecimal minPrice,
@@ -97,13 +81,11 @@ public class ProductController {
     return productServiceImpl.searchProducts(productName, minPrice, maxPrice, pageable);
   }
 
-  @Operation(summary = "Get product price by ID")
   @GetMapping("/{productId}/price")
   public BigDecimal getProductPrice(@PathVariable Long productId) {
     return productServiceImpl.getProductPrice(productId);
   }
 
-  @Operation(summary = "Get secure admin-only data")
   @GetMapping("/secure-data")
   public ResponseEntity<String> getData(@RequestHeader("X-User-Roles") String roles) {
     if (roles.contains("ROLE_ADMIN")) {
