@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-cloud.version>2025.0.0</spring-cloud.version>
+		<sonar.organization>phumlanidev</sonar.organization>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -58,7 +59,7 @@
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-admin-client</artifactId>
-			<version>26.0.5</version>
+			<version>26.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.retry</groupId>
@@ -97,10 +98,11 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- Swagger / OpenAPI -->
+		<!--	Documentation	-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.8.8</version>
+			<version>2.8.16</version>
 		</dependency>
 
 		<!-- JUnit / Testcontainers -->
@@ -109,6 +111,14 @@
 			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+<!--		h2-->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Eureka Discovery Client -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -135,7 +145,27 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-    </dependencies>
+
+		<dependency>
+			<groupId>com.phumlanidev.commonevents</groupId>
+			<artifactId>common-events</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -145,22 +175,124 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.19.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.thoughtworks.xstream</groupId>
+				<artifactId>xstream</artifactId>
+				<version>1.4.21</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.angus</groupId>
+				<artifactId>smtp</artifactId>
+				<version>2.0.4</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.18.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.nimbusds</groupId>
+				<artifactId>nimbus-jose-jwt</artifactId>
+				<version>10.4.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>33.4.8-android</version>
+			</dependency>
+
+			<!-- JUnit -->
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<scope>test</scope>
+			</dependency>
+
+			<!-- Mockito Core -->
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>5.18.0</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Nexus Releases Repository</name>
+			<url>https://nexus.phumlaniarendse.co.za/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Nexus Snapshots Repository</name>
+			<url>https://nexus.phumlaniarendse.co.za/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<url>https://nexus.phumlaniarendse.co.za/repository/maven-public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
-			<!--spring maven-->
+
+			<!-- Standard JAR for deployment -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<!-- Fat jar for local run -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>repackage</id>
+						<phase>package</phase> <!-- Only runs when packaging -->
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<classifier>exec</classifier> <!-- Fat jar gets "-exec" suffix -->
+							<excludeDevtools>false</excludeDevtools>
+						</configuration>
+					</execution>
+				</executions>
 				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+					<!-- Ensure fat jar is NOT attached to deploy -->
+					<attach>false</attach>
 				</configuration>
 			</plugin>
 
@@ -192,7 +324,7 @@
 				</configuration>
 			</plugin>
 
-			<!--  Jacoco  -->
+			<!--  JaCoCo  -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -215,6 +347,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<!--  Maven Surefire  -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -232,6 +365,28 @@
 						<version>1.10.3</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+
+			<!--spotbugs-->
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>4.9.8.2</version>  <!-- or latest stable version, check https://mvnrepository.com/artifact/com.github.spotbugs/spotbugs-maven-plugin -->
+				<configuration>
+					<effort>Max</effort>              <!-- same as your action -->
+					<threshold>High</threshold>        <!-- corresponds to confidence: high -->
+					<plugins>
+						<plugin>
+							<groupId>com.h3xstream.findsecbugs</groupId>
+							<artifactId>findsecbugs-plugin</artifactId>
+							<version>1.13.0</version>      <!-- or latest; check compatibility -->
+						</plugin>
+					</plugins>
+					<!-- Optional: add your filter early -->
+					<!-- <excludeFilterFile>spotbugs-filter.xml</excludeFilterFile> -->
+					<!-- For SARIF output (GitHub compatible): -->
+					<sarifOutputFile>${project.build.directory}/spotbugs.sarif</sarifOutputFile>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -283,5 +438,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>

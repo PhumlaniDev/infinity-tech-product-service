@@ -5,6 +5,11 @@ import com.phumlanidev.productservice.constant.Constant;
 import com.phumlanidev.productservice.dto.ProductDto;
 import com.phumlanidev.productservice.dto.ResponseDto;
 import com.phumlanidev.productservice.service.impl.ProductServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -88,6 +93,4 @@ public class ProductController {
     }
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
   }
-
-
 }

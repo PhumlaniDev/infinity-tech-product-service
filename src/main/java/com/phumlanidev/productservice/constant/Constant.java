@@ -1,13 +1,7 @@
 package com.phumlanidev.productservice.constant;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 public class Constant {
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   private Constant() {
   }
 

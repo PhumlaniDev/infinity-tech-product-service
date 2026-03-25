@@ -6,16 +6,10 @@ import com.phumlanidev.productservice.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 @Component
 @RequiredArgsConstructor
 public class ProductMapper {
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   public Product toEntity(ProductDto dto, Product product) {
     product.setName(dto.getName());
     product.setDescription(dto.getDescription());
@@ -26,9 +20,6 @@ public class ProductMapper {
     return product;
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   public ProductDto toDto(Product product, ProductDto dto) {
     dto.setName(product.getName());
     dto.setDescription(product.getDescription());

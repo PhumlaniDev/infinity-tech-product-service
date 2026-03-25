@@ -4,7 +4,6 @@ package com.phumlanidev.productservice.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,9 +16,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -43,12 +39,4 @@ public class BaseEntity {
   @LastModifiedBy
   @Column(insertable = false)
   private String updatedBy;
-
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
-  @PrePersist
-  public void prePersist() {
-    log.info("PrePersist - createdAt: {}, createdBy: {}", createdAt, createdBy);
-  }
 }

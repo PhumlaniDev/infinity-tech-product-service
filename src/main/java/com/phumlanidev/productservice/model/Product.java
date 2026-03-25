@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table
@@ -24,7 +21,7 @@ public class Product extends BaseEntity {
   private String name;
   private String description;
   private BigDecimal price;
-  private BigDecimal quantity;
+  private Integer quantity;
   private String imageUrl;
 
 }

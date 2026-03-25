@@ -1,6 +1,7 @@
 package com.phumlanidev.productservice.service.impl;
 
 
+import com.phumlanidev.commonevents.events.product.ProductCreatedEvent;
 import com.phumlanidev.productservice.config.JwtAuthenticationConverter;
 import com.phumlanidev.productservice.constant.Constant;
 import com.phumlanidev.productservice.dto.ProductDto;
@@ -8,6 +9,7 @@ import com.phumlanidev.productservice.exception.ProductNotFoundException;
 import com.phumlanidev.productservice.exception.product.ProductAlreadyExistsException;
 import com.phumlanidev.productservice.mapper.ProductMapper;
 import com.phumlanidev.productservice.model.Product;
+import com.phumlanidev.productservice.publisher.ProductEventPublisher;
 import com.phumlanidev.productservice.repository.ProductRepository;
 import com.phumlanidev.productservice.utils.ProductSpecification;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,9 +26,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Comment: this is the placeholder for documentation.
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -37,6 +36,7 @@ public class ProductServiceImpl {
   private final HttpServletRequest request;
   private final AuditLogServiceImpl auditLogService;
   private final JwtAuthenticationConverter jwtAuthenticationConverter;
+  private final ProductEventPublisher productEventPublisher;
 
   @Transactional
   public void createProduct(ProductDto productDto) {
@@ -54,11 +54,15 @@ public class ProductServiceImpl {
 
     productMapper.toDto(savedProduct, productDto);
     logAudit("PRODUCT_CREATED","PRODUCT_CREATED");
+    productEventPublisher.publishProductCreated(
+            ProductCreatedEvent.builder()
+                    .productId(product.getProductId())
+                    .name(product.getName())
+                    .initialQuantity(product.getQuantity())
+                    .build()
+    );
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Transactional
   @Cacheable(value = "products", key = "#productId")
   public ProductDto findProductById(Long productId) {
@@ -70,9 +74,6 @@ public class ProductServiceImpl {
     return productDto;
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Transactional
   public List<ProductDto> findAllProducts() {
     List<Product> products = productRepository.findAll();
@@ -87,10 +88,6 @@ public class ProductServiceImpl {
     return productDtos;
   }
 
-
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Transactional
   @CacheEvict(value = "products", key = "#productId")
   public ProductDto updateProduct(Long productId, ProductDto productDto) {
@@ -109,9 +106,6 @@ public class ProductServiceImpl {
     return productMapper.toDto(updateProduct, new ProductDto());
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Transactional
   @CacheEvict(value = "products", key = "#productId")
   public void deleteProductById(Long productId) {
@@ -122,9 +116,6 @@ public class ProductServiceImpl {
     logAudit("PRODUCT_DELETED", "Product deleted successfully");
   }
 
-  /**
-   * Comment: this is the placeholder for documentation.
-   */
   @Cacheable(value = "productSearchCache", key = "#productName + '-' + #minPrice + " +
       "'-' + #maxPrice + '-' + #pageable.pageNumber + '-' " +
       "+ #pageable.pageSize + '-' + #pageable.sort")
@@ -154,7 +145,6 @@ public class ProductServiceImpl {
     String clientIp = request.getRemoteAddr();
     String username = jwtAuthenticationConverter.getCurrentUsername();
     String userId = jwtAuthenticationConverter.getCurrentUserId();
-
 
     auditLogService.log(
             action,
